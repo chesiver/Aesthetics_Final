@@ -75,7 +75,7 @@ class Circle {
 // rhos fall in range if [0, 1]
 Circle createTestRootCircle() {
   Circle root = new Circle(0, 0, 300);
-  root.setChilds(new float[] {250, 200});
+  root.setChilds(new float[] {240, 200});
   root.setTheta(new float[] {0.0, PI / 2});
   root.setVelocity(new float[] {2.0, 2.0});  
   root.childs[0].setChilds(new float[] {50});
