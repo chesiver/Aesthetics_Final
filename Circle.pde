@@ -6,7 +6,9 @@ class Circle {
   
   //rho + r1 = r
   float rho = 0.0f;
-  //velocity of childs center
+  //angle of child center to parent center
+  float theta = 0.0f;
+  //velocity of child center
   float v = 0.0f;
   
   Circle child = null;
@@ -20,14 +22,12 @@ class Circle {
   public void setVelocity(float v) { this.v = v; }  
   
   public void drawCircle(PGraphics pg) {
-    float theta = v * t;
-    
+    theta += dt * v;
     setMatrix(pg.getMatrix());
     stroke(color(255, 0, 0));
     fill(255, 1.0f);
     ellipse(0, 0, 2 * r, 2 * r);
     resetMatrix();
-       
     pg.pushMatrix();
       pg.rotate(-theta);
       pg.translate(rho, 0.0f);
@@ -37,11 +37,29 @@ class Circle {
           child.drawCircle(pg);
           pg.popMatrix();
         }
-      pg.stroke(color(0, 0, 255));
-      pg.fill(0, 0, 255, 0.0f);
-      pg.ellipse(0, 0, 1, 1);
+      else {
+        pg.stroke(color(0, 0, 255));
+        pg.fill(0, 0, 255);
+        pg.ellipse(0, 0, 2, 2);
+        last_x = screenX(0, 0);
+        last_y = screenY(0, 0);
+        println("last_x: " + last_x + " " + "last_y: " + last_y);
+      }
     pg.popMatrix();
-    
   }
   
+}
+
+// rhos fall in range if [0, 1]
+Circle[] createCircleArray(int n, float x, float y, float r0, float[] rho, float v) {
+  assert(rho.length == n);
+  Circle[] res = new Circle[n];
+  res[0] = new Circle(x, y, r0, r0 * rho[0]); 
+  for (int i = 1; i < n; ++i) {
+    res[i] = new Circle(0, 0, res[i - 1].r * (1 - rho[i - 1]), res[i - 1].r * (1 - rho[i - 1]) * rho[i]);
+    res[i - 1].child = res[i];
+  }
+  for (int i = 0; i < n; ++i) res[i].setVelocity(v);
+  last_x = x; last_y = y;
+  return res;
 }

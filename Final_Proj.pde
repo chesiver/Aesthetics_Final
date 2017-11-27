@@ -4,6 +4,7 @@ Minim minim = null;
 
 //animation
 float t = 0.0f;
+float dt = 0.01f;
 boolean animating = true;
 float v = 5.0f;
 
@@ -13,27 +14,24 @@ float r2 = 120.0f;
 float x1, y1, x2, y2;
 float rho = 80.0f, rho2 = 30.0f;
 
-//root circle
-Circle root;
+//Circles array
+Circle[] circles;
+int n = 3;
+
+//last point coornidate
+float last_x, last_y;
 
 PGraphics pg;
 
-
 void setup() {
   size(800, 640);
+  frameRate(30);
   pg = createGraphics(width, height);
   //noLoop();
   x1 = width / 2;
   y1 = height / 2;
-  root = new Circle(width / 2.0f, height / 2.0f, r1, r1 - r2);
-  root.setChild(rho);
-  root.setVelocity(1.0f);
-  root.child.setVelocity(3.0f);
-  root.child.setChild(rho2);
-  root.child.child.setVelocity(5.0f);
-  println("root: " + root.r + " " + root.rho);
-  println("root child: " + root.child.r + " " + root.child.rho);
-  
+  circles = createCircleArray(3, width / 2, height / 2, 300, new float[] {0.3, 0.6, 0.6}, 1.0f);
+  for (Circle circle: circles) println(circle.v);
   //initialization of music parser
   minim = new Minim(this);
   parser = new MusicParser();
@@ -42,15 +40,19 @@ void setup() {
 
 void draw() {
   background(200);
-
   parser.update();
-
   pg.beginDraw();
   pg.translate(width / 2, height / 2);
-  root.drawCircle(pg);
+  //pg.noFill();
+  //pg.beginShape();
+  //pg
+  //pg.endShape();
+  circles[0].drawCircle(pg);
   pg.endDraw();
   image(pg, 0, 0);
-  if (animating) t += 0.01f;
+  if (animating) {
+    t += dt;
+  }
 }
 
 //void mousePressed() {
