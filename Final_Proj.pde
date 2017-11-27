@@ -16,9 +16,8 @@ float r2 = 120.0f;
 float x1, y1, x2, y2;
 float rho = 80.0f, rho2 = 30.0f;
 
-//Circles array
-Circle[] circles;
-int n = 3;
+//root circle 
+Circle root;
 
 //last point coornidate
 PMatrix lastMatrix;
@@ -33,13 +32,13 @@ void setup() {
   //noLoop();
   x1 = width / 2;
   y1 = height / 2;
-  circles = createCircleArray(3, width / 2, height / 2, 300, new float[] {0.3, 0.6, 0.6}, 2.0f);
-  lastMatrix = new PMatrix2D();
-  lastMatrix.translate(width / 2, height / 2);
-  float x0 = 0;
-  for (int i = 0; i < n; ++i) x0 += circles[i].rho;
-  lastMatrix.translate(x0, 0);
-  for (Circle circle: circles) println(circle.v);
+  root = createTestRootCircle();
+  //circles = createCircleArray(3, width / 2, height / 2, 300, new float[] {0.6, 0.6, 0.6}, 2.0f);
+  //lastMatrix = new PMatrix2D();
+  //lastMatrix.translate(width / 2, height / 2);
+  //float x0 = 0;
+  //for (int i = 0; i < n; ++i) x0 += circles[i].rho;
+  //lastMatrix.translate(x0, 0);
   //initialization of music parser
   minim = new Minim(this);
   parser = new MusicParser();
@@ -51,7 +50,7 @@ void draw() {
   parser.update();
   pg.beginDraw();
   pg.translate(width / 2, height / 2);
-  circles[0].drawCircle(pg);
+  root.drawCircles(pg);
   pg.endDraw();
   image(pg, 0, 0);
   if (animating) {

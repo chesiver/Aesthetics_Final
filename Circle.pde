@@ -1,67 +1,85 @@
 class Circle {
   
-  //childs centers' relatice corrdinates always are (0, 0);
+  //childs' centers' relatice corrdinates always are (0, 0);
   float x = 0.0f, y = 0.0f;
   float r = 0.0f;
   
-  //rho + r1 = r
-  float rho = 0.0f;
-  //angle of child center to parent center
-  float theta = 0.0f;
-  //velocity of child center
-  float v = 0.0f;
-  
-  Circle child = null;
+  // number of childs
+  int n;
+  // rho array, rho + r1 = r0
+  float[] rho;
+  // theta array, angles of child center to parent center
+  float[] theta;
+  // velocity of child center
+  float[] v;
+  // childs pointer
+  Circle[] childs;
+  // is Leaf child
+  boolean isLeaf = true;
   
   public Circle() {}
-  public Circle(float x, float y, float r, float rho) {this.x = x; this.y = y; this.r = r; this.rho = rho; }
+  public Circle(float x, float y, float r) {this.x = x; this.y = y; this.r = r; }
   
-  public void setChild(float rho1) {
-    this.child = new Circle(0.0f, 0.0f, this.r - this.rho, rho1);
+  public void setChilds(float[] rho1) {
+    this.rho = rho1;
+    this.childs = new Circle[rho1.length];
+    this.isLeaf = false;
+    for (int i = 0; i < rho1.length; ++i) {
+      this.childs[i] = new Circle(0.0f, 0.0f, this.r - rho1[i]);
+    }
   }
-  public void setVelocity(float v) { this.v = v; }  
+  public void setTheta(float[] theta) {
+    assert(theta.length == childs.length): "error in setting velocity: theta number not equal to child number!";
+    this.theta = theta;
+  }  
+  public void setVelocity(float[] v) {
+    assert(v.length == childs.length): "error in setting velocity: velocity number not equal to child number!";
+    this.v = v;
+  }  
   
-  public void drawCircle(PGraphics pg) {
-    theta += dt * v;
+  public void drawCircles(PGraphics pg) {
     setMatrix(pg.getMatrix());
     stroke(color(255, 0, 0));
     fill(255, 1.0f);
     ellipse(0, 0, 2 * r, 2 * r);
     resetMatrix();
-    pg.pushMatrix();
-      pg.rotate(-theta);
-      pg.translate(rho, 0.0f);
-        if (child != null) {
-          pg.pushMatrix();
-          pg.rotate(theta * rho / (r - rho));
-          child.drawCircle(pg);
-          pg.popMatrix();
-        }
-      else {
-        pg.stroke(color(0, 0, 255));
-        pg.fill(0, 0, 255);
-        pg.ellipse(0, 0, 1, 1);
-        lastMatrix.mult(new float[]{0, 0}, pre);
-        PMatrix curMatrix = pg.getMatrix().get();
-        curMatrix.invert();
-        curMatrix.mult(pre, cur);
-        lastMatrix = pg.getMatrix().get();
-        pg.line(cur[0], cur[1], 0, 0);
-      }
-    pg.popMatrix();
+    for (int i = 0; i < childs.length; ++i) {
+      theta[i] += dt * v[i];
+      println("theta " + i + ":" + theta[i]);
+      pg.pushMatrix();
+        pg.rotate(-theta[i]);
+        pg.translate(rho[i], 0.0f);
+          if (childs[i].isLeaf == false) {
+            pg.pushMatrix();
+            pg.rotate(theta[i] * rho[i] / (r - rho[i]));
+            childs[i].drawCircles(pg);
+            pg.popMatrix();
+          }
+          else {
+            pg.stroke(color(0, 0, 255));
+            pg.fill(0, 0, 255);
+            pg.ellipse(0, 0, 1, 1);
+            //lastMatrix.mult(new float[]{0, 0}, pre);
+            //PMatrix curMatrix = pg.getMatrix().get();
+            //curMatrix.invert();
+            //curMatrix.mult(pre, cur);
+            //lastMatrix = pg.getMatrix().get();
+            //pg.line(cur[0], cur[1], 0, 0);
+          }
+      pg.popMatrix();
+    }
   }
   
 }
 
 // rhos fall in range if [0, 1]
-Circle[] createCircleArray(int n, float x, float y, float r0, float[] rho, float v) {
-  assert(rho.length == n);
-  Circle[] res = new Circle[n];
-  res[0] = new Circle(x, y, r0, r0 * rho[0]); 
-  for (int i = 1; i < n; ++i) {
-    res[i] = new Circle(0, 0, res[i - 1].r * (1 - rho[i - 1]), res[i - 1].r * (1 - rho[i - 1]) * rho[i]);
-    res[i - 1].child = res[i];
-  }
-  for (int i = 0; i < n; ++i) res[i].setVelocity(v);
-  return res;
+Circle createTestRootCircle() {
+  Circle root = new Circle(0, 0, 300);
+  root.setChilds(new float[] {250, 200});
+  root.setTheta(new float[] {0.0, PI / 2});
+  root.setVelocity(new float[] {2.0, 2.0});  
+  root.childs[0].setChilds(new float[] {50});
+  root.childs[0].setTheta(new float[] {0.0});
+  root.childs[0].setVelocity(new float[] {2.0});  
+  return root;
 }
