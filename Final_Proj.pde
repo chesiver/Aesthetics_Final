@@ -19,7 +19,8 @@ Circle[] circles;
 int n = 3;
 
 //last point coornidate
-float last_x, last_y;
+PMatrix lastMatrix;
+float[] pre = new float[2], cur = new float[2];
 
 PGraphics pg;
 
@@ -30,7 +31,12 @@ void setup() {
   //noLoop();
   x1 = width / 2;
   y1 = height / 2;
-  circles = createCircleArray(3, width / 2, height / 2, 300, new float[] {0.3, 0.6, 0.6}, 1.0f);
+  circles = createCircleArray(3, width / 2, height / 2, 300, new float[] {0.3, 0.6, 0.6}, 2.0f);
+  lastMatrix = new PMatrix2D();
+  lastMatrix.translate(width / 2, height / 2);
+  float x0 = 0;
+  for (int i = 0; i < n; ++i) x0 += circles[i].rho;
+  lastMatrix.translate(x0, 0);
   for (Circle circle: circles) println(circle.v);
   //initialization of music parser
   minim = new Minim(this);
@@ -43,10 +49,6 @@ void draw() {
   parser.update();
   pg.beginDraw();
   pg.translate(width / 2, height / 2);
-  //pg.noFill();
-  //pg.beginShape();
-  //pg
-  //pg.endShape();
   circles[0].drawCircle(pg);
   pg.endDraw();
   image(pg, 0, 0);

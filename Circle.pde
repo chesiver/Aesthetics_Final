@@ -40,10 +40,13 @@ class Circle {
       else {
         pg.stroke(color(0, 0, 255));
         pg.fill(0, 0, 255);
-        pg.ellipse(0, 0, 2, 2);
-        last_x = screenX(0, 0);
-        last_y = screenY(0, 0);
-        println("last_x: " + last_x + " " + "last_y: " + last_y);
+        pg.ellipse(0, 0, 1, 1);
+        lastMatrix.mult(new float[]{0, 0}, pre);
+        PMatrix curMatrix = pg.getMatrix().get();
+        curMatrix.invert();
+        curMatrix.mult(pre, cur);
+        lastMatrix = pg.getMatrix().get();
+        pg.line(cur[0], cur[1], 0, 0);
       }
     pg.popMatrix();
   }
@@ -60,6 +63,5 @@ Circle[] createCircleArray(int n, float x, float y, float r0, float[] rho, float
     res[i - 1].child = res[i];
   }
   for (int i = 0; i < n; ++i) res[i].setVelocity(v);
-  last_x = x; last_y = y;
   return res;
 }
