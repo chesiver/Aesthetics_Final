@@ -2,6 +2,8 @@
 MusicParser parser;
 Minim minim = null;
 
+GUI ui = new GUI();
+
 //animation
 float t = 0.0f;
 float dt = 0.01f;
@@ -55,6 +57,8 @@ void draw() {
   if (animating) {
     t += dt;
   }
+  
+  ui.draw();
 }
 
 //void mousePressed() {

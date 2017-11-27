@@ -26,6 +26,11 @@ class MusicParser {
     fft.window(FFT.GAUSS);
   }
   
+  void setN(int newN) {
+    n = newN;
+    hist = new float[n];
+  }
+  
   void play() {
     music.play();
     isPlaying = true;
@@ -54,9 +59,9 @@ class MusicParser {
         }
         
         f *= pow(2, 1.0/n);
-        print(hist[i]+", ");
+        //print(hist[i]+", ");
       }
-      println();
+      //println();
     }
   }
 }
