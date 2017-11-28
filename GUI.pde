@@ -22,6 +22,7 @@ void mouseWheel(MouseEvent event) {
 class GUI {
   Circle chosen = null;
   int mode = 0;
+  float drawR = 5.0f;
   
   GUI () {
   }
@@ -30,32 +31,48 @@ class GUI {
     //println("key: " + key + ", pressed: " + keyPressed);
     if (mode == 1) {
       updateChosen();
-      stroke(color(255, 0, 0));
-      fill(255, 1.0f);
-      ellipse(mouseX, mouseY, 100, 100);
+      if (chosen != null) {
+        drawR = chosen.radius - sqrt((chosen.x-mouseX)*(chosen.x-mouseX)+(chosen.y-mouseY)*(chosen.y-mouseY));
+        stroke(color(128, 128, 128));
+        strokeWeight(2);
+        ellipse(mouseX, mouseY, drawR*2, drawR*2);
+        strokeWeight(1);
+      }
     }
     else if (mode == 2) {
       updateChosen();
-      stroke(color(255, 0, 255));
-      fill(255, 1.0f);
-      ellipse(mouseX, mouseY, 20, 20);
+      
+      if (chosen != null) {
+        stroke(color(255, 0, 255));
+        fill(color(255, 0, 255));
+        ellipse(mouseX, mouseY, drawR*2, drawR*2);
+        noFill();
+      }
     }
     
     if (chosen != null) {
       // draw the circle with highlight
       stroke(color(0, 0, 0));
-      fill(255, 10.0f);
+      strokeWeight(5f);
       ellipse(chosen.x, chosen.y, chosen.radius*2, chosen.radius*2);
+      strokeWeight(1);
     }
   }
   
   void setMode(int m) {
     mode = (mode == m ? 0 : m);
+    if (mode == 1) {
+      updateChosen();
+      if (chosen != null) drawR = chosen.radius / 2;
+    }
+    else if (mode == 2) {
+      drawR = 5.0f;
+    }
   }
 
   Circle findCircle(float x, float y, Circle c) {
     Circle res = null;
-    if (c.childs.size() == 0) return res;
+    if (c.isPoint) return res;
     //println(((c.x-x)*(c.x-x)) + " " + ((c.y-y)*(c.y-y)) + " " + c.radius*c.radius);
     if ((c.x-x)*(c.x-x)+(c.y-y)*(c.y-y) <= c.radius*c.radius) {
       res = c;
@@ -72,13 +89,19 @@ class GUI {
   }
   
   void addCircle() {
+    if (chosen != null) {
+      chosen.addCircle(mouseX, mouseY, drawR);
+    }
   }
   
   void addPoint() {
+    if (chosen != null) {
+      chosen.addPoint(mouseX, mouseY);
+    }
   }
   
   void changeR(float value) {
-    if (chosen != null) {
+    if (mode == 0 && chosen != null) {
       
     }
   }

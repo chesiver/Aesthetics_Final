@@ -14,18 +14,37 @@ class Circle {
   //child pointers
   ArrayList<Circle> childs = new ArrayList<Circle>();
   
+  //whether it's a point or a circle
+  boolean isPoint = false;
+  
   //transform matrix of curent;
   PMatrix transform = new PMatrix2D();
   
   public Circle() {}
-  public Circle(float x, float y, float radius) {this.x = x; this.y = y; this.radius = radius; }
-  public Circle(float rho, float theta, float velocity, float radius) {this.rho = rho; this.theta = theta; this.velocity = velocity; this.radius = radius; }
+  public Circle(float x, float y, float radius) {this.x = x; this.y = y; this.radius = radius;}
+  public Circle(float rho, float theta, float velocity, float radius, boolean isPoint) {
+    this.rho = rho; this.theta = theta; this.velocity = velocity; this.radius = radius; this.isPoint = isPoint; 
+  }
   
-  public void setChilds(float[] rho1, float[] theta1, float[] velocity1) {
+  public void addCircle(float newX, float newY, float newR) {
+    //float degree = atan2(y-newY, newX-x);
+    Circle tmp = new Circle(radius - newR, degree, 1.0, newR, false);
+    tmp.parent = this;
+    childs.add(tmp);
+  }
+  
+  public void addPoint(float newX, float newY) {
+    //float degree = atan2(y-newY, newX-x);
+    Circle tmp = new Circle(radius - sqrt(newX*newX+newY*newY), degree, 0, 0, true);
+    tmp.parent = this;
+    childs.add(tmp);
+  }
+  
+  public void setChilds(float[] rho1, float[] theta1, float[] velocity1, boolean[] isPoints) {
     assert(rho1.length == theta1.length);
     assert(rho1.length == velocity1.length);
     for (int i = 0; i < rho1.length; ++i) {
-      childs.add(new Circle(rho1[i], theta1[i], velocity1[i], radius - rho1[i]));
+      childs.add(new Circle(rho1[i], theta1[i], velocity1[i], radius - rho1[i], isPoints[i]));
       childs.get(i).parent = this;
     }
   }
@@ -52,7 +71,7 @@ class Circle {
     if (parent != null) {
       x = cur[0]; y = cur[1];
     }
-    if (childs.size() == 0) {
+    if (isPoint) {
       pg.stroke(color(0, 0, 255));
       pg.fill(255, 0.0f);
       pg.ellipse(0, 0, 1, 1);
@@ -79,8 +98,8 @@ class Circle {
 
 Circle createTestRootCircle() {
   Circle root = new Circle(width / 2 , height / 2, 300);
-  root.setChilds(new float[] {240}, new float[] {0.0}, new float[] {1.0});
-  root.childs.get(0).setChilds(new float[] {40}, new float[] {0.0}, new float[] {5.0});
-  root.childs.get(0).childs.get(0).setChilds(new float[] {4, 8}, new float[] {0.0, PI / 2}, new float[] {0.0, 0.0});
+  root.setChilds(new float[] {240}, new float[] {0.0}, new float[] {1.0}, new boolean[] {false});
+  root.childs.get(0).setChilds(new float[] {40}, new float[] {0.0}, new float[] {5.0}, new boolean[] {false});
+  root.childs.get(0).childs.get(0).setChilds(new float[] {0, 0}, new float[] {0.0, PI / 2}, new float[] {0.0, 0.0}, new boolean[] {true, true});
   return root;
 }

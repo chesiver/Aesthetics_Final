@@ -45,7 +45,7 @@ void setup() {
 }
 
 void draw() {
-  background(200);
+  background(255);
   parser.update();
   pg.beginDraw();
   pg.translate(width / 2, height / 2);
