@@ -46,17 +46,14 @@ class Circle {
     pg.pushMatrix();
     pg.rotate(-theta);
     pg.translate(rho, 0);
+    transform.rotate(-theta);
+    transform.translate(rho, 0);
+    transform.mult(new float[] {0, 0}, cur);
+    x = cur[0]; y = cur[1];
     if (childs.size() == 0) {
       pg.stroke(color(0, 0, 255));
       pg.fill(255, 0.0f);
       pg.ellipse(0, 0, 1, 1);
-      float[] cur = new float[2];
-      transform.rotate(-theta);
-      transform.translate(rho, 0);
-      transform.mult(new float[] {0, 0}, cur);
-      //stroke(0, 0, 255);
-      //ellipse(cur[0], cur[1], 1, 1);
-      x = cur[0]; y = cur[1];
     }
     else {
       setMatrix(pg.getMatrix());
@@ -72,41 +69,16 @@ class Circle {
         pg.popMatrix();
         child.update();
       }
+      float[] cur = new float[2];
     }
     pg.popMatrix();
-    //for (int i = 0; i < childs.length; ++i) {
-    //  theta[i] += dt * v[i];
-    //  println("theta " + i + ":" + theta[i]);
-    //  pg.pushMatrix();
-    //    pg.rotate(-theta[i]);
-    //    pg.translate(rho[i], 0.0f);
-    //      if (childs[i].isLeaf == false) {
-    //        pg.pushMatrix();
-    //        pg.rotate(theta[i] * rho[i] / (r - rho[i]));
-    //        childs[i].drawCircles(pg);
-    //        pg.popMatrix();
-    //      }
-    //      else {
-    //        pg.stroke(color(0, 0, 255));
-    //        pg.fill(0, 0, 255);
-    //        pg.ellipse(0, 0, 1, 1);
-    //        //lastMatrix.mult(new float[]{0, 0}, pre);
-    //        //PMatrix curMatrix = pg.getMatrix().get();
-    //        //curMatrix.invert();
-    //        //curMatrix.mult(pre, cur);
-    //        //lastMatrix = pg.getMatrix().get();
-    //        //pg.line(cur[0], cur[1], 0, 0);
-    //      }
-    //  pg.popMatrix();
-    //}
   }
-  
 }
 
 Circle createTestRootCircle() {
   Circle root = new Circle(width / 2 , height / 2, 300);
   root.setChilds(new float[] {240}, new float[] {0.0}, new float[] {1.0});
-  root.childs.get(0).setChilds(new float[] {40}, new float[] {0.0}, new float[] {2.0});
+  root.childs.get(0).setChilds(new float[] {40}, new float[] {0.0}, new float[] {5.0});
   root.childs.get(0).childs.get(0).setChilds(new float[] {4, 8}, new float[] {0.0, PI / 2}, new float[] {0.0, 0.0});
   return root;
 }
