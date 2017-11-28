@@ -49,7 +49,9 @@ class Circle {
     transform.rotate(-theta);
     transform.translate(rho, 0);
     transform.mult(new float[] {0, 0}, cur);
-    x = cur[0]; y = cur[1];
+    if (parent != null) {
+      x = cur[0]; y = cur[1];
+    }
     if (childs.size() == 0) {
       pg.stroke(color(0, 0, 255));
       pg.fill(255, 0.0f);

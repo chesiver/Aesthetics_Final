@@ -44,8 +44,8 @@ class GUI {
     if (chosen != null) {
       // draw the circle with highlight
       stroke(color(0, 0, 0));
-      fill(255, 3.0f);
-      ellipse(chosen.x, chosen.y, chosen.radius, chosen.radius);
+      fill(255, 10.0f);
+      ellipse(chosen.x, chosen.y, chosen.radius*2, chosen.radius*2);
     }
   }
   
@@ -55,7 +55,8 @@ class GUI {
 
   Circle findCircle(float x, float y, Circle c) {
     Circle res = null;
-    println(((c.x-x)*(c.x-x)) + " " + ((c.y-y)*(c.y-y)) + " " + c.radius*c.radius);
+    if (c.childs.size() == 0) return res;
+    //println(((c.x-x)*(c.x-x)) + " " + ((c.y-y)*(c.y-y)) + " " + c.radius*c.radius);
     if ((c.x-x)*(c.x-x)+(c.y-y)*(c.y-y) <= c.radius*c.radius) {
       res = c;
       for (Circle child : c.childs) {
