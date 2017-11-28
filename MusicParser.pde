@@ -6,18 +6,19 @@ class MusicParser {
   FFT fft;
   int frame = 0;
 
-  int n = 5;
+  int n = 10;
   // value of each histogram
   float[] hist = new float[n];
+  float[][] colors = new float[n][3];
   
   boolean isPlaying = false;
   float rate;
   
   String FolderName = "data/";
-  String FileName = "Schubert.mp3";
+  String FileName = "5566.mp3";
   String FilePath = FolderName + FileName;
   
-  int interval = 4;
+  int interval = 8;
   
   MusicParser() {
     music = minim.loadFile(FilePath);
@@ -29,6 +30,7 @@ class MusicParser {
   void setN(int newN) {
     n = newN;
     hist = new float[n];
+    colors = new float[n][3];
   }
   
   void play() {
@@ -51,15 +53,34 @@ class MusicParser {
       float f = 55;
       for (int i = 0; i < n; ++i) {
         hist[i] = 0;
+        for (int j = 0; j < 3; j++) colors[i][j] = 0;
         float tmp = f;
-        while (tmp < rate/2) {
+        int count = 9;
+        for (int j = 0; j < count; ++j) {
           float amp = fft.getFreq(tmp);
           hist[i] = max(hist[i], amp);
+          //hist[i] += amp;
+          colors[i][j/3] += amp;
           tmp *= 2;
         }
         
         f *= pow(2, 1.0/n);
-        //print(hist[i]+", ");
+        //print(hist[i]+" ");
+      }
+      
+      float minV = 10000;
+      float maxV = 0;
+      for (int i = 0; i < n; ++i) 
+        for (int j = 0; j < 3; ++j){
+          minV = min(colors[i][j], minV);
+          maxV = max(colors[i][j], maxV);
+        }
+      
+      if (maxV > 0) {
+        for (int i = 0; i < n; ++i) 
+          for (int j = 0; j < 3; ++j) {
+            colors[i][j] = 255*(colors[i][j] - minV) / (maxV - minV);
+          }
       }
       //println();
     }
