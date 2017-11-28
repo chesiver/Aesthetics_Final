@@ -41,7 +41,7 @@ void setup() {
   //initialization of music parser
   minim = new Minim(this);
   parser = new MusicParser();
-  //parser.play();
+
 }
 
 void draw() {
@@ -52,12 +52,10 @@ void draw() {
   root.drawChilds(pg);
   pg.endDraw();
   image(pg, 0, 0);
-  if (animating) {
-    dt = 0.01f;
-  }
-  else dt = 0;
   t += dt;
+  
   parser.update();
+  parser.draw();
   ui.draw();
 }
 

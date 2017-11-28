@@ -2,6 +2,7 @@ void keyPressed() {
   switch (key) {
     case 'a': ui.setMode(1); break;
     case 'c': ui.setMode(2); break;
+    case ' ': ui.setMode(0); ui.toggle(); break;
     default: ui.setMode(0); break;
   }
 }
@@ -24,7 +25,10 @@ class GUI {
   int mode = 0;
   float drawR = 5.0f;
   
+  HScrollbar bar;
+  
   GUI () {
+    bar = new HScrollbar(30, 20, 100, 10, "W");
   }
   
   void draw() {
@@ -56,6 +60,19 @@ class GUI {
       strokeWeight(5f);
       ellipse(chosen.x, chosen.y, chosen.radius*2, chosen.radius*2);
       strokeWeight(1);
+    }
+    bar.update();
+    bar.display();
+  }
+  
+  void toggle() {
+    if (animating) {
+      parser.stopPlaying();
+      dt = 0;
+    }
+    else {
+      dt = 0.01f;
+      parser.play();
     }
   }
   
@@ -192,7 +209,7 @@ class HScrollbar {
     if (spos >= sposMin && spos <= sposMax) rect(spos-sheight/2, ypos, sheight, sheight);
     fill(0);
     textSize(16);
-    text(name + ": ", xpos-sheight*3, ypos + sheight);
+    text(name + ":", xpos-sheight*2, ypos + sheight);
     textSize(14);
     if (interval < 0.1) text(String.format("%.2f", getValue()), xpos+swidth+5, ypos + sheight);
     else text(String.format("%.1f", getValue()), xpos+swidth+5, ypos + sheight);

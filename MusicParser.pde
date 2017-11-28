@@ -64,7 +64,9 @@ class MusicParser {
         }
         
         f *= pow(2, 1.0/n);
-        //print(hist[i]+" ");
+        hist[i] *= 0.1f;
+        hist[i] = max(hist[i], 5.0f);
+        print(hist[i]+" ");
       }
       
       float minV = 10000;
@@ -81,7 +83,18 @@ class MusicParser {
             colors[i][j] = 255*(colors[i][j] - minV) / (maxV - minV);
           }
       }
-      //println();
+      println();
     }
+  }
+  
+  void draw() {
+    if (!animating) return;
+    float boxW = 150;
+    float w = boxW / n;
+    for (int i = 0; i < n; ++i) {
+    noStroke();
+    fill(colors[i][0], colors[i][1], colors[i][2]);
+    rect(width-boxW+i*w, height, w, -parser.hist[i]*20);
+  }
   }
 }
