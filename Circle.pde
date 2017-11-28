@@ -45,7 +45,7 @@ class Circle {
     resetMatrix();
     for (int i = 0; i < childs.length; ++i) {
       theta[i] += dt * v[i];
-      println("theta " + i + ":" + theta[i]);
+      //println("theta " + i + ":" + theta[i]);
       pg.pushMatrix();
         pg.rotate(-theta[i]);
         pg.translate(rho[i], 0.0f);
