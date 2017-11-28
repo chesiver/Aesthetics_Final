@@ -53,22 +53,21 @@ class GUI {
     mode = (mode == m ? 0 : m);
   }
 
-  Circle findCircle(float x, float y, Circle circle) {
-    for (Circle c : circle.childs) {
-      println(c.x + " " + c.y + " " + c.radius);
-      if ((c.x-x)*(c.x-x)+(c.y-y)*(c.y-y) <= c.radius) {
-        Circle res = findCircle(x, y, c);
-        if (res == null) return c;
-        else return res;
+  Circle findCircle(float x, float y, Circle c) {
+    Circle res = null;
+    println(((c.x-x)*(c.x-x)) + " " + ((c.y-y)*(c.y-y)) + " " + c.radius*c.radius);
+    if ((c.x-x)*(c.x-x)+(c.y-y)*(c.y-y) <= c.radius*c.radius) {
+      res = c;
+      for (Circle child : c.childs) {
+        Circle tmp = findCircle(x, y, child);
+        if (tmp != null) return tmp;
       }
     }
-    return null;
+    return res;
   }
   
   void updateChosen() {
     chosen = findCircle(mouseX, mouseY, root);
-    if (chosen != null) println(chosen.x + " " + chosen.y + " " + chosen.radius);
-    else println("null");
   }
   
   void addCircle() {

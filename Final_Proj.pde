@@ -6,8 +6,8 @@ GUI ui = new GUI();
 
 //animation
 float t = 0.0f;
-float dt = 0.01f;
-boolean animating = true;
+float dt = 0.0f;
+boolean animating = false;
 
 //Circles
 float r1 = 300.0f;
