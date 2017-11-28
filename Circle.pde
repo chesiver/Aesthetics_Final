@@ -27,7 +27,9 @@ class Circle {
   }
   
   public void addCircle(float newX, float newY, float newR) {
-    //float degree = atan2(y-newY, newX-x);
+    float[] cur = new float[2];
+    transform.mult(new float[] {newX, newY}, cur);
+    float degree = atan2(-newY, newX);
     Circle tmp = new Circle(radius - newR, degree, 1.0, newR, false);
     tmp.parent = this;
     childs.add(tmp);
@@ -35,9 +37,9 @@ class Circle {
   
   public void addPoint(float newX, float newY) {
     //float degree = atan2(y-newY, newX-x);
-    Circle tmp = new Circle(radius - sqrt(newX*newX+newY*newY), degree, 0, 0, true);
-    tmp.parent = this;
-    childs.add(tmp);
+    //Circle tmp = new Circle(radius - sqrt(newX*newX+newY*newY), degree, 0, 0, true);
+    //tmp.parent = this;
+    //childs.add(tmp);
   }
   
   public void setChilds(float[] rho1, float[] theta1, float[] velocity1, boolean[] isPoints) {
@@ -67,6 +69,7 @@ class Circle {
     pg.translate(rho, 0);
     transform.rotate(-theta);
     transform.translate(rho, 0);
+    float[] cur = new float[2];
     transform.mult(new float[] {0, 0}, cur);
     if (parent != null) {
       x = cur[0]; y = cur[1];
@@ -90,7 +93,6 @@ class Circle {
         pg.popMatrix();
         child.update();
       }
-      float[] cur = new float[2];
     }
     pg.popMatrix();
   }

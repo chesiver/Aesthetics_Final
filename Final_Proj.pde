@@ -20,7 +20,7 @@ Circle root;
 
 //last point coornidate
 PMatrix lastMatrix;
-float[] pre = new float[2], cur = new float[2];
+//float[] pre = new float[2], cur = new float[2];
 
 PGraphics pg;
 
