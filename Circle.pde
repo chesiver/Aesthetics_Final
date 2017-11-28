@@ -17,7 +17,7 @@ class Circle {
   //whether it's a point or a circle
   boolean isPoint = false;
   
-  //transform matrix of curent;
+  //transform matrix of parent;
   PMatrix transform = new PMatrix2D();
   
   public Circle() {}
@@ -27,15 +27,42 @@ class Circle {
   }
   
   public void addCircle(float newX, float newY, float newR) {
-    //float degree = atan2(y-newY, newX-x);
-    Circle tmp = new Circle(radius - newR, degree, 1.0, newR, false);
+    assert(newR < radius): "new cirlce should be smaller than its parent!";
+    float[] test = new float[6]; 
+    PMatrix transform_invert = transform.get(); 
+    transform_invert.rotate(-theta);
+    transform_invert.translate(rho, 0);
+    
+    transform_invert.get(test);
+    println("test!!!!!!!!!!");
+    println(test[0] + " " + test[1] + " " + test[2]);
+    println(test[3] + " " + test[4] + " " + test[5]);
+    println("parent r: " + radius);
+    println("-------------");
+    transform_invert.invert();
+    float[] cur = new float[2]; 
+    println(newX + " " + newY);
+    transform_invert.mult(new float[] {newX, newY}, cur);
+    println(cur[0] + " " + cur[1]);
+    float newTheta = atan2(-cur[1], cur[0]);
+    if (newTheta < 0) newTheta = TWO_PI + newTheta;
+    println("newTheta: " + newTheta);
+    Circle tmp = new Circle(radius - newR, newTheta, velocity, newR, false);
+    tmp.transform = this.transform.get();
+    tmp.transform.rotate(-theta);
+    tmp.transform.translate(rho, 0);
     tmp.parent = this;
     childs.add(tmp);
   }
   
   public void addPoint(float newX, float newY) {
-    //float degree = atan2(y-newY, newX-x);
-    Circle tmp = new Circle(radius - sqrt(newX*newX+newY*newY), degree, 0, 0, true);
+    PMatrix transform_invert = transform.get(); transform_invert.invert();
+    float[] cur = new float[2]; 
+    transform_invert.mult(new float[] {newX, newY}, cur);
+    float newTheta = atan2(-cur[1], cur[0]);
+    if (newTheta < 0) newTheta = TWO_PI + newTheta;
+    float newRho = sqrt(sq(cur[0]) + sq(cur[1]));
+    Circle tmp = new Circle(newRho, newTheta, velocity, 1.0, true);
     tmp.parent = this;
     childs.add(tmp);
   }
@@ -46,6 +73,9 @@ class Circle {
     for (int i = 0; i < rho1.length; ++i) {
       childs.add(new Circle(rho1[i], theta1[i], velocity1[i], radius - rho1[i], isPoints[i]));
       childs.get(i).parent = this;
+      childs.get(i).transform = this.transform.get();
+      childs.get(i).transform.rotate(-theta);
+      childs.get(i).transform.translate(rho, 0);
     }
   }
   public void setRadius(float radius) {
@@ -98,6 +128,7 @@ class Circle {
 
 Circle createTestRootCircle() {
   Circle root = new Circle(width / 2 , height / 2, 300);
+  root.transform.translate(width / 2, height / 2);
   root.setChilds(new float[] {240}, new float[] {0.0}, new float[] {1.0}, new boolean[] {false});
   root.childs.get(0).setChilds(new float[] {40}, new float[] {0.0}, new float[] {5.0}, new boolean[] {false});
   root.childs.get(0).childs.get(0).setChilds(new float[] {0, 0}, new float[] {0.0, PI / 2}, new float[] {0.0, 0.0}, new boolean[] {true, true});
