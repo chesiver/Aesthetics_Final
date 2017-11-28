@@ -8,6 +8,7 @@ GUI ui = new GUI();
 float t = 0.0f;
 float dt = 0.01f;
 boolean animating = true;
+float v = 5.0f;
 
 //Circles
 float r1 = 300.0f;
@@ -49,7 +50,7 @@ void draw() {
   parser.update();
   pg.beginDraw();
   pg.translate(width / 2, height / 2);
-  root.drawChilds(pg);
+  root.drawCircles(pg);
   pg.endDraw();
   image(pg, 0, 0);
   if (animating) {
