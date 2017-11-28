@@ -10,8 +10,7 @@ class MusicParser {
   // value of each histogram
   float[] hist = new float[n];
   float[][] colors = new float[n][3];
-  
-  boolean isPlaying = false;
+  //boolean isPlaying = false;
   float rate;
   
   String FolderName = "data/";
@@ -35,18 +34,18 @@ class MusicParser {
   
   void play() {
     music.play();
-    isPlaying = true;
+    animating = true;
     frame = 0;
   }
   
   void stopPlaying() {
+    animating = false;
     music.pause();
-    isPlaying = false;
   }
   
   // update every "interval" frame
   void update() {
-    if (!isPlaying) return;
+    if (!animating) return;
     frame++;
     if (frame % interval == 0) {
       fft.forward( music.mix );
