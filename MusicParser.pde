@@ -6,7 +6,7 @@ class MusicParser {
   FFT fft;
   int frame = 0;
 
-  int n = 10;
+  int n = 0;
   // value of each histogram
   float[] hist = new float[n];
   float[][] colors = new float[n][3];
@@ -30,6 +30,13 @@ class MusicParser {
     n = newN;
     hist = new float[n];
     colors = new float[n][3];
+    for (int i = 0; i < n; ++i) {
+      hist[i] = 0;
+      for (int j = 0; j < 3; j++) {
+        colors[i][j] = 0;
+      }
+      colors[i][0] = 255;
+    }
   }
   
   void play() {
@@ -95,7 +102,7 @@ class MusicParser {
     noStroke();
     fill(colors[i][0], colors[i][1], colors[i][2]);
     rect(width-boxW+i*w, height, w, -parser.hist[i]*20);
-    fill(255);
+    noFill();
   }
   }
 }

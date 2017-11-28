@@ -20,6 +20,8 @@ class Circle {
   //transform matrix of curent;
   PMatrix transform = new PMatrix2D();
   
+  int pIndex = -1;
+  
   public Circle() {}
   public Circle(float x, float y, float radius) {this.x = x; this.y = y; this.radius = radius;}
   public Circle(float rho, float theta, float velocity, float radius, boolean isPoint) {
@@ -33,12 +35,13 @@ class Circle {
     return tmp;
   }
   
-  public void addPoint(float newX, float newY) {
+  public Circle addPoint(float newX, float newY) {
     float newR = sqrt((x-newX)*(x-newX)+(y-newY)*(y-newY));
     println(newR);
-    Circle tmp = new Circle(newR, 0, 0, 0, true);
+    Circle tmp = new Circle(newR, 0, velocity, 1.0, true);
     tmp.parent = this;
     childs.add(tmp);
+    return tmp;
   }
   
   public void setChilds(float[] rho1, float[] theta1, float[] velocity1, boolean[] isPoints) {
@@ -74,9 +77,11 @@ class Circle {
       x = cur[0]; y = cur[1];
     }
     if (isPoint) {
-      pg.stroke(color(0, 0, 255));
-      pg.fill(255, 0.0f);
-      pg.ellipse(0, 0, 5, 5);
+      pg.noStroke();
+      pg.fill(color(parser.colors[pIndex][0], parser.colors[pIndex][1], parser.colors[pIndex][2]));
+      //pg.fill(255, 0.0f);
+      float drawR = 2.0 + parser.hist[pIndex]*sin(PI/(parser.frame % parser.interval));
+      pg.ellipse(0, 0, drawR, drawR);
       //println(x + ", " + y);
     }
     else {

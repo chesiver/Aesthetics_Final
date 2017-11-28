@@ -116,7 +116,9 @@ class GUI {
   
   void addPoint() {
     if (chosen != null) {
-      chosen.addPoint(mouseX, mouseY);
+      Circle point = chosen.addPoint(mouseX, mouseY);
+      point.pIndex = parser.n;
+      parser.setN(parser.n+1);
     }
   }
   
