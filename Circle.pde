@@ -26,20 +26,19 @@ class Circle {
     this.rho = rho; this.theta = theta; this.velocity = velocity; this.radius = radius; this.isPoint = isPoint; 
   }
   
-  public void addCircle(float newX, float newY, float newR) {
-    float[] cur = new float[2];
-    transform.mult(new float[] {newX, newY}, cur);
-    float degree = atan2(-newY, newX);
-    Circle tmp = new Circle(radius - newR, degree, 1.0, newR, false);
+  public Circle addCircle(float newX, float newY, float newR) {
+    Circle tmp = new Circle(radius - newR, 0, 1.0, newR, false);
     tmp.parent = this;
     childs.add(tmp);
+    return tmp;
   }
   
   public void addPoint(float newX, float newY) {
-    //float degree = atan2(y-newY, newX-x);
-    //Circle tmp = new Circle(radius - sqrt(newX*newX+newY*newY), degree, 0, 0, true);
-    //tmp.parent = this;
-    //childs.add(tmp);
+    float newR = sqrt((x-newX)*(x-newX)+(y-newY)*(y-newY));
+    println(newR);
+    Circle tmp = new Circle(newR, 0, 0, 0, true);
+    tmp.parent = this;
+    childs.add(tmp);
   }
   
   public void setChilds(float[] rho1, float[] theta1, float[] velocity1, boolean[] isPoints) {
@@ -77,7 +76,8 @@ class Circle {
     if (isPoint) {
       pg.stroke(color(0, 0, 255));
       pg.fill(255, 0.0f);
-      pg.ellipse(0, 0, 1, 1);
+      pg.ellipse(0, 0, 5, 5);
+      //println(x + ", " + y);
     }
     else {
       setMatrix(pg.getMatrix());
@@ -100,8 +100,8 @@ class Circle {
 
 Circle createTestRootCircle() {
   Circle root = new Circle(width / 2 , height / 2, 300);
-  root.setChilds(new float[] {240}, new float[] {0.0}, new float[] {1.0}, new boolean[] {false});
-  root.childs.get(0).setChilds(new float[] {40}, new float[] {0.0}, new float[] {5.0}, new boolean[] {false});
-  root.childs.get(0).childs.get(0).setChilds(new float[] {0, 0}, new float[] {0.0, PI / 2}, new float[] {0.0, 0.0}, new boolean[] {true, true});
+  //root.setChilds(new float[] {240}, new float[] {0.0}, new float[] {1.0}, new boolean[] {false});
+  //root.childs.get(0).setChilds(new float[] {40}, new float[] {0.0}, new float[] {5.0}, new boolean[] {false});
+  //root.childs.get(0).childs.get(0).setChilds(new float[] {0, 0}, new float[] {0.0, PI / 2}, new float[] {0.0, 0.0}, new boolean[] {true, true});
   return root;
 }

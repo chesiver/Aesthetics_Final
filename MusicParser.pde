@@ -65,7 +65,7 @@ class MusicParser {
         
         f *= pow(2, 1.0/n);
         hist[i] *= 0.1f;
-        hist[i] = max(hist[i], 5.0f);
+        hist[i] = min(hist[i], 5.0f);
         print(hist[i]+" ");
       }
       
@@ -95,6 +95,7 @@ class MusicParser {
     noStroke();
     fill(colors[i][0], colors[i][1], colors[i][2]);
     rect(width-boxW+i*w, height, w, -parser.hist[i]*20);
+    fill(255);
   }
   }
 }

@@ -9,7 +9,7 @@ void keyPressed() {
 
 void mouseClicked() {
   switch (ui.mode) {
-    case 0: ui.updateChosen(); break;
+    //case 0: ui.updateChosen(); break;
     case 1: ui.addCircle(); break;
     case 2: ui.addPoint(); break;
   }
@@ -29,13 +29,15 @@ class GUI {
   
   GUI () {
     bar = new HScrollbar(30, 20, 100, 10, "W");
+    chosen = root;
   }
   
   void draw() {
     //println("key: " + key + ", pressed: " + keyPressed);
     if (mode == 1) {
-      updateChosen();
+      //updateChosen();
       if (chosen != null) {
+        mouseY = (int)y1;
         drawR = chosen.radius - sqrt((chosen.x-mouseX)*(chosen.x-mouseX)+(chosen.y-mouseY)*(chosen.y-mouseY));
         stroke(color(128, 128, 128));
         strokeWeight(2);
@@ -44,9 +46,10 @@ class GUI {
       }
     }
     else if (mode == 2) {
-      updateChosen();
+      //updateChosen();
       
       if (chosen != null) {
+        mouseY = (int)y1;
         stroke(color(255, 0, 255));
         fill(color(255, 0, 255));
         ellipse(mouseX, mouseY, drawR*2, drawR*2);
@@ -79,8 +82,8 @@ class GUI {
   void setMode(int m) {
     mode = (mode == m ? 0 : m);
     if (mode == 1) {
-      updateChosen();
-      if (chosen != null) drawR = chosen.radius / 2;
+      //updateChosen();
+      //if (chosen != null) drawR = chosen.radius / 2;
     }
     else if (mode == 2) {
       drawR = 5.0f;
@@ -107,7 +110,7 @@ class GUI {
   
   void addCircle() {
     if (chosen != null) {
-      chosen.addCircle(mouseX, mouseY, drawR);
+      chosen = chosen.addCircle(mouseX, mouseY, drawR);
     }
   }
   

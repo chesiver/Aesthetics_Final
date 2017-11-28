@@ -2,7 +2,7 @@
 MusicParser parser;
 Minim minim = null;
 
-GUI ui = new GUI();
+GUI ui;
 
 //animation
 float t = 0.0f;
@@ -41,7 +41,7 @@ void setup() {
   //initialization of music parser
   minim = new Minim(this);
   parser = new MusicParser();
-
+  ui = new GUI();
 }
 
 void draw() {
