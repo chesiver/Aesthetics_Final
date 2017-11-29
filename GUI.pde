@@ -1,7 +1,16 @@
+void fileSelected(File selection) {
+  if (selection == null) {
+  } else {
+    println("User selected " + selection.getAbsolutePath());
+    parser.music = minim.loadFile(selection.getAbsolutePath());
+  }
+}
+
 void keyPressed() {
   switch (key) {
     case 'a': ui.setMode(1); break;
-    case 'c': ui.setMode(2); break;
+    case 's': ui.setMode(2); break;
+    case 'f': selectInput("Select a file to process:", "fileSelected"); break;
     case ' ': ui.setMode(0); ui.toggle(); break;
     default: ui.setMode(0); break;
   }
@@ -17,39 +26,42 @@ void mouseClicked() {
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  ui.changeR(e*5);
+  ui.changeValue(e);
 }
 
 class GUI {
   Circle chosen = null;
-  int mode = 0;
+  int mode = 1;
   float drawR = 5.0f;
   
   HScrollbar bar;
   
   GUI () {
-    bar = new HScrollbar(30, 20, 100, 10, "W");
+    bar = new HScrollbar(30, 30, 100, 10, "degree velocity");
     chosen = root;
   }
   
   void draw() {
+    drawHelper();
     //println("key: " + key + ", pressed: " + keyPressed);
+    if (animating) return;
     if (mode == 1) {
-      //updateChosen();
+      updateChosen();
       if (chosen != null) {
-        mouseY = (int)y1;
+        //mouseY = (int)y1;
         drawR = chosen.radius - sqrt((chosen.x-mouseX)*(chosen.x-mouseX)+(chosen.y-mouseY)*(chosen.y-mouseY));
         stroke(color(128, 128, 128));
-        strokeWeight(2);
+        noFill();
+        strokeWeight(4);
         ellipse(mouseX, mouseY, drawR*2, drawR*2);
         strokeWeight(1);
       }
     }
     else if (mode == 2) {
-      //updateChosen();
+      updateChosen();
       
       if (chosen != null) {
-        mouseY = (int)y1;
+        //mouseY = (int)y1;
         stroke(color(255, 0, 255));
         fill(color(255, 0, 255));
         ellipse(mouseX, mouseY, drawR*2, drawR*2);
@@ -60,12 +72,13 @@ class GUI {
     if (chosen != null) {
       // draw the circle with highlight
       stroke(color(0, 0, 0));
-      strokeWeight(5f);
+      noFill();
+      strokeWeight(2f);
       ellipse(chosen.x, chosen.y, chosen.radius*2, chosen.radius*2);
       strokeWeight(1);
     }
-    bar.update();
-    bar.display();
+    //bar.update();
+    if (mode != 0) bar.display();
   }
   
   void toggle() {
@@ -82,11 +95,16 @@ class GUI {
   void setMode(int m) {
     mode = (mode == m ? 0 : m);
     if (mode == 1) {
-      //updateChosen();
+      updateChosen();
+      bar.setPos(1);
       //if (chosen != null) drawR = chosen.radius / 2;
     }
     else if (mode == 2) {
       drawR = 5.0f;
+      bar.setPos(0);
+    }
+    else {
+      chosen = null;
     }
   }
 
@@ -110,22 +128,35 @@ class GUI {
   
   void addCircle() {
     if (chosen != null) {
-      chosen = chosen.addCircle(mouseX, mouseY, drawR);
+      chosen = chosen.addCircle(mouseX, mouseY, drawR, bar.getValue());
     }
   }
   
   void addPoint() {
     if (chosen != null) {
-      Circle point = chosen.addPoint(mouseX, mouseY);
+      Circle point = chosen.addPoint(mouseX, mouseY, bar.getValue());
       point.pIndex = parser.n;
       parser.setN(parser.n+1);
     }
   }
   
-  void changeR(float value) {
-    if (mode == 0 && chosen != null) {
-      
-    }
+  void changeValue(float value) {
+    bar.setPos(bar.getValue()+value*bar.interval);
+  }
+  
+  void drawHelper() {
+    fill(0);
+    textSize(10);
+    float posx = 5, posy = height - 120;
+    String st = "Helper:\n" + 
+                "press ' ': to start displaying\n" +
+                "press 'a': enter mode of adding circles\n" +
+                "press 's': enter mode of adding printing point\n" + 
+                "press 'f': to choose a music file from file system\n" + 
+                "In both modes: \n" +
+                "  mouse click to add a circle/point;\n  use mouse wheel to adjust degree velocity";
+    text(st,posx, posy);
+    noFill();
   }
 }
 
@@ -142,7 +173,7 @@ class HScrollbar {
   String name;
   
   float minV = -5, maxV = 5;
-  float interval = 0.2;
+  float interval = 0.05;
 
   HScrollbar (float xp, float yp, int sw, int sh, String st) {
     swidth = sw;
@@ -214,7 +245,7 @@ class HScrollbar {
     if (spos >= sposMin && spos <= sposMax) rect(spos-sheight/2, ypos, sheight, sheight);
     fill(0);
     textSize(16);
-    text(name + ":", xpos-sheight*2, ypos + sheight);
+    text(name + ":", xpos-10, ypos-5);
     textSize(14);
     if (interval < 0.1) text(String.format("%.2f", getValue()), xpos+swidth+5, ypos + sheight);
     else text(String.format("%.1f", getValue()), xpos+swidth+5, ypos + sheight);
@@ -227,6 +258,8 @@ class HScrollbar {
   }
   
   void setPos(float value){
+    value = max(minV, value);
+    value = min(value, maxV);
     spos = xpos + (value-minV) / ratio / (maxV-minV);
   }
   

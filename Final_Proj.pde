@@ -2,6 +2,9 @@
 MusicParser parser;
 Minim minim = null;
 
+String FolderName = "data/";
+String FileName = "music.mp3";
+
 GUI ui;
 
 //animation
@@ -58,11 +61,3 @@ void draw() {
   parser.draw();
   ui.draw();
 }
-
-//void mousePressed() {
-//  loop();  // Holding down the mouse activates looping
-//}
-
-//void mouseReleased() {
-//  noLoop();  // Releasing the mouse stops looping draw()
-//}
